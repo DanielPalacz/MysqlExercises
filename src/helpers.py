@@ -1,5 +1,6 @@
 from os import getenv
-from typing import Iterator
+from pathlib import Path
+from typing import Iterator, Union
 
 from dotenv import load_dotenv
 
@@ -24,7 +25,13 @@ def get_credentials() -> dict:
 
 
 def transaction_reader(transactions_path="src/static/population.sql") -> Iterator[str]:
+    """Used only for initial db population."""
     with open(transactions_path, "r", encoding="UTF-8") as transactions_file:
         for line in transactions_file:
             if "INSERT INTO" in line:
                 yield f"START TRANSACTION;\nUSE `mydb`;\n{line}\nCOMMIT;"
+
+
+def get_file_content(file_path: Union[str, Path]) -> str:
+    with open(file_path, "r", encoding="UTF-8") as file_obj:
+        return file_obj.read()
