@@ -1,3 +1,8 @@
+"""
+tests for src.helpers module
+"""
+
+
 from pathlib import Path
 
 import pytest
@@ -40,3 +45,13 @@ class TestGetFileContent:
     def test_get_file_content_str_obj_input(self):
         text = get_file_content(file_path="tests/static/example.txt")
         assert text == self.EXPECTED_TEXT
+
+
+class TestBuildTransaction:
+    """ tests for src.helpers.build_transaction"""
+    pass
+
+
+class TestBuildUpdateCurrencyTransaction:
+    """ tests for src.helpers.build_update_currency_transaction"""
+    pass
