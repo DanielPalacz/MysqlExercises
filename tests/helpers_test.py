@@ -1,6 +1,8 @@
+from pathlib import Path
+
 import pytest
 
-from src.helpers import get_credentials, transaction_reader
+from src.helpers import get_credentials, transaction_reader, get_file_content
 
 
 class TestGetCredentials:
@@ -26,3 +28,15 @@ class TestTransactionReader:
         transaction_reader_gen = transaction_reader(transactions_path="tests/static/population_fixture.sql")
         for transaction in transaction_reader_gen:
             assert transaction == exp_transaction
+
+
+class TestGetFileContent:
+    EXPECTED_TEXT = "Exampled file\nUnit test artefact\n"
+
+    def test_get_file_content_path_obj_input(self):
+        text = get_file_content(file_path=Path("tests/static/example.txt"))
+        assert text == self.EXPECTED_TEXT
+
+    def test_get_file_content_str_obj_input(self):
+        text = get_file_content(file_path="tests/static/example.txt")
+        assert text == self.EXPECTED_TEXT

@@ -1,6 +1,6 @@
 import mysql.connector
 
-from src.helpers import get_credentials, transaction_reader
+from src.helpers import get_credentials, transaction_reader, get_file_content
 
 
 class DbWrapper:
@@ -35,14 +35,12 @@ class DbWrapper:
             self.execute_query(schema.read())
 
 
-def populate_db() -> None:
-    for transaction in transaction_reader():
-        with DbWrapper(**get_credentials()) as dbtemp:
-            dbtemp.execute_query(transaction)
-
-
 if __name__ == "__main__":
     with DbWrapper(**get_credentials()) as db:
         db.drop_db()
         db.initiate_db()
-    populate_db()
+    for transaction in transaction_reader():
+        with DbWrapper(**get_credentials()) as dbtemp:
+            dbtemp.execute_query(transaction)
+    with DbWrapper(**get_credentials()) as db:
+        db.execute_query(get_file_content("src/static/extend_product_table.sql"))
