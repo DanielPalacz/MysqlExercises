@@ -6,6 +6,11 @@ from src.helpers import get_credentials, transaction_reader
 class DbWrapper:
 
     def __init__(self, host: str, user: str, password: str):
+        try:
+            # will raise Type Error if not all params are str
+            "".join([v for k, v in locals().items() if k != "self"])
+        except TypeError:
+            raise
         self._host = host
         self._user = user
         self._password = password
