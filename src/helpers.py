@@ -1,6 +1,8 @@
+from datetime import datetime
 from os import getenv
 from pathlib import Path
 from typing import Iterator, Union
+from logging import (basicConfig, getLogger, DEBUG)
 
 from dotenv import load_dotenv
 
@@ -50,3 +52,24 @@ def build_update_currency_transaction(currency: str, value: float) -> str:
 def get_file_content(file_path: Union[str, Path]) -> str:
     with open(file_path, "r", encoding="UTF-8") as file_obj:
         return file_obj.read()
+
+
+def get_timestamp():
+    now = datetime.now()
+    year = now.strftime("%Y")
+    month = now.strftime("%m")
+    day = now.strftime("%d")
+    time = now.strftime("%H%M%S")
+    return year + month + day + "_" + time
+
+
+class LogProvider:
+    """ Singleton class. """
+    logger = None
+
+    def __new__(cls):
+        if cls.logger is None:
+            format_ = "{asctime} {levelname} {message}"
+            basicConfig(filename=f"Log{get_timestamp()}.log", level=DEBUG, format=format_, style='{')
+            cls.logger = getLogger()
+        return cls.logger
