@@ -1,9 +1,7 @@
-from pprint import pprint
-
 from mysql import connector
 from mysql.connector.errors import OperationalError
 
-from src.helpers import get_credentials, transaction_reader, get_file_content, LogProvider
+from src.helpers import LogProvider, get_credentials, transaction_reader, get_file_content
 
 
 class DbWrapper:
@@ -31,10 +29,13 @@ class DbWrapper:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._conn.close()
 
-    def execute_query(self, query: str) -> None:
+    def execute_query(self, query: str):
         self._logger.debug(f"Executing query:\n{query}")
         try:
-            self._conn.cursor().execute(query)
+            cursor_ = self._conn.cursor()
+            cursor_.execute(query, multi=True)
+            fetchall_ = cursor_.fetchall()
+            return fetchall_ or None
         except OperationalError as err:
             self._logger.exception(f"Connecting with Database was not possible due to: {err}")
             self._logger.debug(query)
@@ -48,6 +49,24 @@ class DbWrapper:
         with open("src/static/dbdrop.sql",  "r", encoding="UTF-8") as schema:
             self.execute_query(schema.read())
 
+    def select_query(self, query: str):
+        self._logger.debug(f"Executing query:\n{query}")
+        try:
+            mycursor = self._conn.cursor()
+            mycursor.execute(query)
+            return mycursor.fetchall()
+        except OperationalError as err:
+            self._logger.exception(f"Connecting with Database was not possible due to: {err}")
+            self._logger.debug(query)
+            raise OperationalError from err
+
 
 if __name__ == "__main__":
-    pass
+    creds_ = get_credentials()
+    with DbWrapper(**creds_) as db:
+        db.initiate_db()
+    for transaction in transaction_reader():
+        with DbWrapper(**creds_) as dbtemp:
+            dbtemp.execute_query(transaction)
+    with DbWrapper(**creds_) as db:
+        db.execute_query(get_file_content("src/static/extend_product_table.sql"))
