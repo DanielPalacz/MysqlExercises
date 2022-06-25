@@ -48,6 +48,17 @@ class DbWrapper:
         with open("src/static/dbdrop.sql",  "r", encoding="UTF-8") as schema:
             self.execute_query(schema.read())
 
+    def select_query(self, query: str) -> list[tuple[str, ...], ...]:
+        self._logger.debug(f"Executing query:\n{query}")
+        try:
+            mycursor = self._conn.cursor()
+            mycursor.execute(query)
+            return mycursor.fetchall()
+        except OperationalError as err:
+            self._logger.exception(f"Connecting with Database was not possible due to: {err}")
+            self._logger.debug(query)
+            raise OperationalError from err
+
 
 if __name__ == "__main__":
     pass
