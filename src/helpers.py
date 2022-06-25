@@ -40,9 +40,9 @@ def build_transaction(sql_query: str) -> str:
 
 def build_update_currency_transaction(currency: str, value: float) -> str:
     if currency == "USD":
-        update_sql_query = f"UPDATE Product SET UnitPriceUSD = {value}"
+        update_sql_query = f"UPDATE Product SET UnitPriceUSD='{value}';"
     elif currency == "Euro":
-        update_sql_query = f"UPDATE Product SET UnitPriceEuro = {value}"
+        update_sql_query = f"UPDATE Product SET UnitPriceEuro='{value}';"
     else:
         raise ValueError("Sql could not be built.")
 

@@ -27,12 +27,13 @@ def update_currency_rates(config) -> None:
     """Command updates current currency rates for USD and Euro."""
     nbp_client = NbpClient()
     click.secho(message=" ... Downloading current currency rate for USD.", fg="blue", bold=True)
-    usd_rate = nbp_client.download_currency_rate("USD")
+    usd_rate = nbp_client.get_mid_currency_rate("usd")
     click.secho(message=" ... Downloading current currency rate for Euro.", fg="blue", bold=True)
-    euro_rate = nbp_client.download_currency_rate("Euro")
+    euro_rate = nbp_client.get_mid_currency_rate("eur")
     with DbWrapper(**get_credentials()) as db:
         click.secho(message=" ... Updating mydb.Product.UnitPriceUSD column with current USD rate.", fg="blue", bold=True)
         db.execute_query(build_update_currency_transaction(currency="USD", value=usd_rate))
+    with DbWrapper(**get_credentials()) as db:
         click.secho(message=" ... Updating mydb.Product.UnitPriceEuro column with current Euro rate.", fg="blue", bold=True)
         db.execute_query(build_update_currency_transaction(currency="Euro", value=euro_rate))
 
