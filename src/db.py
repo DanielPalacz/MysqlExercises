@@ -21,7 +21,11 @@ class DbWrapper:
         self._logger = LogProvider()
 
     def __enter__(self):
-        self._conn = connector.connect(host=self._host, user=self._user, password=self._password)
+        try:
+            self._conn = connector.connect(host=self._host, user=self._user, password=self._password)
+        except OperationalError as err:
+            self._logger.exception(f"Connecting with Database was not possible due to: {err}")
+            raise OperationalError from err
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
