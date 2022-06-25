@@ -1,5 +1,6 @@
 import click
 
+from src.reports import generate_product_report
 from src.rest_api import NbpClient
 from src.db import DbWrapper
 from src.helpers import get_credentials, build_update_currency_transaction, transaction_reader, get_file_content
@@ -38,8 +39,8 @@ def db_setup(config) -> None:
         db.initiate_db()
     click.secho(message=" ... Inserting all test data.", fg="blue", bold=False)
     for transaction in transaction_reader():
-        with DbWrapper(**get_credentials()) as dbtemp:
-            dbtemp.execute_query(transaction)
+        with DbWrapper(**get_credentials()) as db:
+            db.execute_query(transaction)
     with DbWrapper(**creds) as db:
         click.secho(message=" ... Adding 2 new columns to Product table (UnitPriceUSD, UnitPriceEuro).", fg="blue", bold=False)
         db.execute_query(get_file_content("src/static/extend_product_table.sql"))
@@ -61,8 +62,14 @@ def generate_report(config):
       g. UnitPrice,
       h. UnitPriceUSD,
       i. UnitPriceEuro,
-      j. Ranking"""
-    click.secho(message="Hi, from generate_report command context!", fg="blue", bold=True)
+      j. Ranking
+      k. ProductDesc
+      l. UnitsInStock
+      m. UnitsInOrder"""
+    click.secho(message=" ... Generating Product report.", fg="blue")
+    with DbWrapper(**get_credentials()) as db:
+        report_name = generate_product_report()(db)
+    click.secho(message=f" ... Product report {report_name!r} was generated.", fg="blue")
 
 
 @cli.command()
