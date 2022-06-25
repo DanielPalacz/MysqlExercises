@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from mysql import connector
 from mysql.connector.errors import OperationalError
 
@@ -44,12 +46,4 @@ class DbWrapper:
 
 
 if __name__ == "__main__":
-    creds: dict = get_credentials()
-    with DbWrapper(**creds) as db:
-        db.drop_db()
-        db.initiate_db()
-    for transaction in transaction_reader():
-        with DbWrapper(**get_credentials()) as dbtemp:
-            dbtemp.execute_query(transaction)
-    with DbWrapper(**creds) as db:
-        db.execute_query(get_file_content("src/static/extend_product_table.sql"))
+    pass

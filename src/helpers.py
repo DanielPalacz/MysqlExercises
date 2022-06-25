@@ -1,5 +1,7 @@
+import os
 from datetime import datetime
-from os import getenv
+from os import getenv, mkdir
+from os.path import exists
 from pathlib import Path
 from typing import Iterator, Union
 from logging import (basicConfig, getLogger, DEBUG)
@@ -63,13 +65,21 @@ def get_timestamp():
     return year + month + day + "_" + time
 
 
+def get_root_dir() -> str:
+    return os.path.dirname(os.path.abspath(__file__ + "/.."))
+
+
 class LogProvider:
-    """ Singleton class. """
     logger = None
 
     def __new__(cls):
         if cls.logger is None:
+            root_dir = get_root_dir()
+            log_dir = root_dir + "/" + getenv("LOGDIR") or "logs"
+            log_path = f"{log_dir}/Log.txt"
+            if not exists(log_dir):
+                mkdir(log_dir)
             format_ = "{asctime} {levelname} {message}"
-            basicConfig(filename=f"Log{get_timestamp()}.log", level=DEBUG, format=format_, style='{')
+            basicConfig(filename=log_path, level=DEBUG, format=format_, style='{')
             cls.logger = getLogger()
         return cls.logger
