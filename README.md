@@ -8,4 +8,9 @@
 <br>`python app.py update-currency-rates`
 
 ### Run tests
-`PYTHONPATH=. pytest -s -vv tests/`
+* All tests:<br>
+`PYTHONPATH=. pytest -p no:logging -s -vv tests/ `<br>
+* All tests (apart from logging related items):<br>
+`PYTHONPATH=. pytest -s -vv tests/`<br>
+* All tests (apart from tests marked as questionable):<br>
+`PYTHONPATH=. pytest -p no:logging -s -vv tests/ -m "not questionable"`
