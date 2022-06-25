@@ -1,6 +1,10 @@
-from os import getenv
+import os
+from datetime import datetime
+from os import getenv, mkdir
+from os.path import exists
 from pathlib import Path
 from typing import Iterator, Union
+from logging import (basicConfig, getLogger, DEBUG)
 
 from dotenv import load_dotenv
 
@@ -38,9 +42,9 @@ def build_transaction(sql_query: str) -> str:
 
 def build_update_currency_transaction(currency: str, value: float) -> str:
     if currency == "USD":
-        update_sql_query = f"UPDATE Product SET UnitPriceUSD = {value}"
+        update_sql_query = f"UPDATE Product SET UnitPriceUSD='{value}';"
     elif currency == "Euro":
-        update_sql_query = f"UPDATE Product SET UnitPriceEuro = {value}"
+        update_sql_query = f"UPDATE Product SET UnitPriceEuro='{value}';"
     else:
         raise ValueError("Sql could not be built.")
 
@@ -50,3 +54,32 @@ def build_update_currency_transaction(currency: str, value: float) -> str:
 def get_file_content(file_path: Union[str, Path]) -> str:
     with open(file_path, "r", encoding="UTF-8") as file_obj:
         return file_obj.read()
+
+
+def get_timestamp():
+    now = datetime.now()
+    year = now.strftime("%Y")
+    month = now.strftime("%m")
+    day = now.strftime("%d")
+    time = now.strftime("%H%M%S")
+    return year + month + day + "_" + time
+
+
+def get_root_dir() -> str:
+    return os.path.dirname(os.path.abspath(__file__ + "/.."))
+
+
+class LogProvider:
+    logger = None
+
+    def __new__(cls):
+        if cls.logger is None:
+            root_dir = get_root_dir()
+            log_dir = root_dir + "/" + getenv("LOGDIR") or "logs"
+            log_path = f"{log_dir}/Log.txt"
+            if not exists(log_dir):
+                mkdir(log_dir)
+            format_ = "{asctime} {levelname} {message}"
+            basicConfig(filename=log_path, level=DEBUG, format=format_, style='{')
+            cls.logger = getLogger()
+        return cls.logger
