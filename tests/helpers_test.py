@@ -7,11 +7,16 @@ from pathlib import Path
 
 import pytest
 
-from src.helpers import get_credentials, transaction_reader, get_file_content, get_timestamp, LogProvider
+from src.helpers import (
+    get_credentials,
+    transaction_reader,
+    get_file_content,
+    get_timestamp,
+    LogProvider,
+)
 
 
 class TestGetCredentials:
-
     def test_get_credentials_env_setuped(self, mock_env_creds):
         creds = get_credentials()
         assert isinstance(creds, dict)
@@ -23,14 +28,17 @@ class TestGetCredentials:
 
 
 class TestTransactionReader:
-
     def test_transaction_reader(self):
-        exp_transaction = "START TRANSACTION;\nUSE `mydb`;\n" \
-                      "INSERT INTO `mydb`.`Payment_Giftcard` " \
-                      "(`GiftcardID`, `PaymentID`, `GiftCardNumber`, `GiftcardExpMM`, `GiftcardExpYYYY`) " \
-                      "VALUES ('G764', 'P7836', '4556 8598 9698', '12', '2020');" \
-                      "\n\nCOMMIT;"
-        transaction_reader_gen = transaction_reader(transactions_path="tests/static/population_fixture.sql")
+        exp_transaction = (
+            "START TRANSACTION;\nUSE `mydb`;\n"
+            "INSERT INTO `mydb`.`Payment_Giftcard` "
+            "(`GiftcardID`, `PaymentID`, `GiftCardNumber`, `GiftcardExpMM`, `GiftcardExpYYYY`) "
+            "VALUES ('G764', 'P7836', '4556 8598 9698', '12', '2020');"
+            "\n\nCOMMIT;"
+        )
+        transaction_reader_gen = transaction_reader(
+            transactions_path="tests/static/population_fixture.sql"
+        )
         for transaction in transaction_reader_gen:
             assert transaction == exp_transaction
 
@@ -52,17 +60,19 @@ class TestGetFileContent:
 
 
 class TestBuildTransaction:
-    """ tests for src.helpers.build_transaction"""
+    """tests for src.helpers.build_transaction"""
+
     pass
 
 
 class TestBuildUpdateCurrencyTransaction:
-    """ tests for src.helpers.build_update_currency_transaction"""
+    """tests for src.helpers.build_update_currency_transaction"""
+
     pass
 
 
 class TestGetTimestamp:
-    """ tests for src.helpers.get_timestamp"""
+    """tests for src.helpers.get_timestamp"""
 
     def test_get_timestamp(self):
         timestamp_ = get_timestamp()
@@ -76,7 +86,7 @@ class TestGetTimestamp:
 
 @pytest.mark.questionable
 class TestLogProvider:
-    """ tests for src.helpers.LogProvider"""
+    """tests for src.helpers.LogProvider"""
 
     def test_log_provider(self):
         logger = LogProvider()

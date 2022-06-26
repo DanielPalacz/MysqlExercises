@@ -11,7 +11,7 @@ class ExcelReport:
     def __enter__(self):
         self._workbook = Workbook(self._name)
         self._worksheet = self._workbook.add_worksheet()
-        self._bold = self._workbook.add_format({'bold': True})
+        self._bold = self._workbook.add_format({"bold": True})
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -30,7 +30,21 @@ class ExcelReport:
 
 
 def generate_product_report() -> callable:
-    product_table_columns = ("ProductID", "DepartmentID", "Category", "IDSKU", "ProductName", "Quantity", "UnitPrice", "UnitPriceUSD", "UnitPriceEuro", "Ranking", "ProductDesc", "UnitsInStock", "UnitsInOrder")
+    product_table_columns = (
+        "ProductID",
+        "DepartmentID",
+        "Category",
+        "IDSKU",
+        "ProductName",
+        "Quantity",
+        "UnitPrice",
+        "UnitPriceUSD",
+        "UnitPriceEuro",
+        "Ranking",
+        "ProductDesc",
+        "UnitsInStock",
+        "UnitsInOrder",
+    )
     columns = ", ".join(["p." + column for column in product_table_columns])
     product_query = f"select {columns} from mydb.Product p order by p.ProductID asc;"
 
