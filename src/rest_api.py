@@ -1,10 +1,9 @@
-from requests import (Session, RequestException)
+from requests import Session, RequestException
 
 from src.helpers import LogProvider
 
 
 class RestApiClient:
-
     def __init__(self, headers: dict = None):
         self._logger = LogProvider()
         self._sesion = Session()
@@ -24,12 +23,16 @@ class NbpClient(RestApiClient):
         {'table': 'A', 'currency': 'dolar amerykański', 'code': 'USD', 'rates': [{'no': '121/A/NBP/2022', 'effectiveDate': '2022-06-24', 'mid': 4.4656}]}
         """
         url_ = self.currency_exchange_url(currency)
-        self._logger.debug(f"Connecting with NbpAPI ({url_}) to get currency rate for {currency}")
+        self._logger.debug(
+            f"Connecting with NbpAPI ({url_}) to get currency rate for {currency}"
+        )
         try:
             reponse_content = self._sesion.get(url_).json()
             self._logger.debug(f"Response body:  {reponse_content}")
         except RequestException as err:
-            self._logger.exception(f"Connecting with NbpAPI ({url_}) was not possible due to: {err}")
+            self._logger.exception(
+                f"Connecting with NbpAPI ({url_}) was not possible due to: {err}"
+            )
             raise RequestException from err
         return float(reponse_content.get("rates")[0].get("mid"))
 

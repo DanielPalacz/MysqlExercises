@@ -1,13 +1,10 @@
-from pprint import pprint
-
 from mysql import connector
 from mysql.connector.errors import OperationalError
 
-from src.helpers import get_credentials, transaction_reader, get_file_content, LogProvider
+from src.helpers import LogProvider
 
 
 class DbWrapper:
-
     def __init__(self, host: str, user: str, password: str):
         try:
             # will raise Type Error if not all params are str
@@ -22,9 +19,13 @@ class DbWrapper:
 
     def __enter__(self):
         try:
-            self._conn = connector.connect(host=self._host, user=self._user, password=self._password)
+            self._conn = connector.connect(
+                host=self._host, user=self._user, password=self._password
+            )
         except OperationalError as err:
-            self._logger.exception(f"Connecting with Database was not possible due to: {err}")
+            self._logger.exception(
+                f"Connecting with Database was not possible due to: {err}"
+            )
             raise OperationalError from err
         return self
 
@@ -36,7 +37,9 @@ class DbWrapper:
         try:
             self._conn.cursor().execute(query)
         except OperationalError as err:
-            self._logger.exception(f"Connecting with Database was not possible due to: {err}")
+            self._logger.exception(
+                f"Connecting with Database was not possible due to: {err}"
+            )
             self._logger.debug(query)
             raise OperationalError from err
 
@@ -45,7 +48,7 @@ class DbWrapper:
             self.execute_query(schema.read())
 
     def drop_db(self) -> None:
-        with open("src/static/dbdrop.sql",  "r", encoding="UTF-8") as schema:
+        with open("src/static/dbdrop.sql", "r", encoding="UTF-8") as schema:
             self.execute_query(schema.read())
 
     def select_query(self, query: str) -> list[tuple[str, ...], ...]:
@@ -55,7 +58,9 @@ class DbWrapper:
             mycursor.execute(query)
             return mycursor.fetchall()
         except OperationalError as err:
-            self._logger.exception(f"Connecting with Database was not possible due to: {err}")
+            self._logger.exception(
+                f"Connecting with Database was not possible due to: {err}"
+            )
             self._logger.debug(query)
             raise OperationalError from err
 

@@ -4,7 +4,7 @@ from os import getenv, mkdir
 from os.path import exists
 from pathlib import Path
 from typing import Iterator, Union
-from logging import (basicConfig, getLogger, DEBUG)
+from logging import basicConfig, getLogger, DEBUG
 
 from dotenv import load_dotenv
 
@@ -21,11 +21,7 @@ def get_credentials() -> dict:
     if db_host is None or db_user is None or db_password is None:
         raise OSError("Environment is not set.")
 
-    return {
-        "host": db_host,
-        "user": db_user,
-        "password": db_password
-        }
+    return {"host": db_host, "user": db_user, "password": db_password}
 
 
 def transaction_reader(transactions_path="src/static/population.sql") -> Iterator[str]:
@@ -80,6 +76,6 @@ class LogProvider:
             if not exists(log_dir):
                 mkdir(log_dir)
             format_ = "{asctime} {levelname} {message}"
-            basicConfig(filename=log_path, level=DEBUG, format=format_, style='{')
+            basicConfig(filename=log_path, level=DEBUG, format=format_, style="{")
             cls.logger = getLogger()
         return cls.logger

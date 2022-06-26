@@ -1,0 +1,6 @@
+# Development settings
+DB_HOST = localhost
+DB_USER = <user>
+DB_PASSWORD = <pass>
+DBNAME = mydb
+LOGDIR = CustomLogDir1 # optional
