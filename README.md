@@ -14,6 +14,10 @@
 * Generating excel report with list of all product
 <br>`python app.py generate-report`
 
+### Non-Functional requirements
+* DB schema exports: sql_exports
+
+
 ### Run tests
 * All tests:<br>
 `PYTHONPATH=. pytest -p no:logging -s -vv tests/ `<br>
