@@ -30,7 +30,7 @@ Comment2: Credentials were managed by env variables with dotenv package. For thi
 
 
 ### Ares of improvements
-* planning project architecture (at first) 
+* planning project architecture (at first)
 * using more auto-formatters / style-checkers (pre-commit, black, flake8)
 * unit tests / mocking, tracking UT coverage
 * build python package (allowing installing though: pip install <module_name>.whl), setup.py, tox

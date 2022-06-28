@@ -144,7 +144,7 @@ CREATE UNIQUE INDEX `ShipperID_UNIQUE` ON `mydb`.`Shipper` (`ShipperID` ASC);
 
 
 CREATE TABLE IF NOT EXISTS `mydb`.`Orders` (
-  `OrderID` VARCHAR(8) NOT NULL, 
+  `OrderID` VARCHAR(8) NOT NULL,
   `UserID` VARCHAR(8) NOT NULL,
   `ShipperID` VARCHAR(8) NOT NULL,
   `OrderDate` DATE NOT NULL,
@@ -243,4 +243,3 @@ CREATE TABLE IF NOT EXISTS `mydb`.`view1` (`id` INT);
 
 DROP TABLE IF EXISTS `mydb`.`view1`;
 USE `mydb`;
-
